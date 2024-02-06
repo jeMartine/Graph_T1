@@ -20,15 +20,11 @@ def init_ortho():
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluOrtho2D(0, ortho_width, 0, ortho_height)
+
 def print_lines(points):
     glBegin(GL_LINE_STRIP)
     for point in points:
         glVertex2f(point[0], point[1])
-    glEnd()
-
-def plot_point(center):
-    glBegin(GL_POINTS)
-    glVertex2f(center[0], center[1])
     glEnd()
 
 
@@ -46,39 +42,38 @@ while not done:
     #puntos para crear una estrella
     lines=[(1,2),(4,2),(1.5,0),(2.5,3.2), (3.5,0), (1,2)]
 
-    n_stars=20
+    orion=[(0.63,4.69),(0.6,3.75),(0.41,3.66),(0.21,4.71),(0.41,3.66),(1.19,3.04),(1.73,2.82),(3.19,1,55),
+          (3.5, 0.14),(5,1),(3.4,2.1),(3.32,1.79),(3.19,1,55),(3.32,1.79),(3.4,2.1), (3.17,3.4),
+          (2.36,3.66),(1.73,2.82),(2.36,3.66),(3.17,3.4),(4.63,4.3),(4.39,4.6),(4.06,4.72),(4.39,4.6),
+          (4.63,4.3),(4.72,4.03),(4.9,3.46),(4.86,3.19)]
+
+    orion_b = [(val[0] * 15, val[1] * 18) for val in orion]
+
+
     constelation = []
     star_center = []
-    for _ in range(n_stars):
+    for val in orion_b:
         new_star = []
-        #numeros aleatorios que dan cuanto me muevo en X y en Y
-        number1 = round(random.uniform(0, ortho_height), 2)
-        number2 = round(random.uniform(0, ortho_height), 2)
-        #se crean nuevas coordenadas de una estrella para ponerse aleatoriamente en el plano
+        #numeros que indican cuanto me muevo en X y en Y
+        number1 = (val[0]-2.5)
+        number2 = (val[1]-1.5)
+        #se crean nuevas coordenadas de una estrella para poner en el plano
         for line in lines:
             pos = (number1 + line[0], number2 + line[1])
             #se crea una nueva estrella
             new_star.append(pos)
 
-        #calcula el promedio de los puntos para encontrar el centro de la estrella
-        x = round (sum(point[0] for point in new_star) / len(new_star), 2)
-        y = round (sum(point[1] for point in new_star) / len(new_star), 2)
-        aux = (x, y)
-        star_center.append(aux)
         constelation.append(new_star)
 
-    for cen in star_center:
-        print(cen[0], cen[1])
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+    #imprimir constelación
+    print_lines(orion_b)
 
     #imprimir las estrellas
     for star in constelation:
         print_lines(star)
 
-    #imprimir el centro de cada estrella
-    print_lines(star_center)
-
     pygame.display.flip()
-    pygame.time.wait(100000)
+    pygame.time.wait(10)
 pygame.quit()
